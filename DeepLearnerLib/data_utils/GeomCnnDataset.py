@@ -55,7 +55,8 @@ class GeomCnnDataModule(pl.LightningDataModule):
         print("Setting up data loaders ...")
         # Assign train/val datasets for use in dataloaders
         if stage in (None, "fit"):
-            train_files, train_labels = get_image_files_single_scalar("TRAIN_DATA_DIR", self.FILE_PATHS)
+            print("UUUUUUUU",self.FILE_PATHS)
+            train_files, train_labels = get_image_files_single_scalar(FILE_PATHS=self.FILE_PATHS,data_dir="TRAIN_DATA_DIR")
             length = len(train_files)
             if self.batch_size == -1:
                 self.batch_size = length
@@ -75,7 +76,7 @@ class GeomCnnDataModule(pl.LightningDataModule):
 
         # Assign test dataset for use in dataloader(s)
         if stage in (None, "test"):
-            test_files, test_labels = get_image_files_single_scalar("TEST_DATA_DIR", self.FILE_PATHS)
+            test_files, test_labels = get_image_files_single_scalar(FILE_PATHS=self.FILE_PATHS,data_dir="TEST_DATA_DIR")
             self.test_ds = GeomCnnDataset(test_files, test_labels, self.test_transform)
         print("Finished loading !!!")
 
@@ -101,10 +102,11 @@ class GeomCnnDataModuleKFold:
         self.n_splits = n_splits
         self.num_workers = num_workers
         self.FILE_PATHS = file_paths
-        print("VVVVVVVVVV",type(self.FILE_PATHS))
+        
         self.datamodules = self.split_data()
 
     def split_data(self):
+        print("VVVVVVVVVV",type(self.FILE_PATHS))
         train_files, train_labels = get_image_files_single_scalar(FILE_PATHS=self.FILE_PATHS,data_dir="TRAIN_DATA_DIR")
         skf = StratifiedKFold(n_splits=self.n_splits)
         datamodule_list = []
